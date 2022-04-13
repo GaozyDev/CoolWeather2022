@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'MainPage.dart';
+import 'page/MainPage.dart';
 import 'data/unit_model.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   final unitModel = UnitModel();
   unitModel.initUnit();
 

@@ -1,4 +1,4 @@
-package com.example.cool_weather_2022
+package www.gl.com.coolweather
 
 import io.flutter.embedding.android.FlutterActivity
 

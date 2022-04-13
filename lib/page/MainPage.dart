@@ -10,9 +10,9 @@ import 'package:quiver/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'WeatherDetailPage.dart';
-import 'bean/focus_district_list_bean.dart';
-import 'bean/weather_bean.dart';
-import 'data/constant.dart';
+import '../bean/focus_district_list_bean.dart';
+import '../bean/weather_bean.dart';
+import '../data/constant.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -206,7 +206,6 @@ class _MainPageState extends State<MainPage> {
         district!.longitude != -1 &&
         weatherBean != null) {
       String districtName = district!.name;
-
     }
   }
 
@@ -273,7 +272,7 @@ class _MainPageState extends State<MainPage> {
   Widget _createWeatherAnimWidget() {
     Widget animWidget;
     // if (weatherBean == null) {
-      animWidget = EmptyBg();
+    animWidget = EmptyBg();
     // } else {
     //   switch (weatherBean.result.realtime.skycon) {
     //     case 'CLEAR_DAY':
@@ -345,13 +344,13 @@ class _MainPageState extends State<MainPage> {
       children: <Widget>[
         currentPage == 0
             ? const Padding(
-          padding: EdgeInsets.only(left: 22),
-          child: ImageIcon(
-            AssetImage("images/ic_location.png"),
-            size: 22,
-            color: Colors.white60,
-          ),
-        )
+                padding: EdgeInsets.only(left: 22),
+                child: ImageIcon(
+                  AssetImage("images/ic_location.png"),
+                  size: 22,
+                  color: Colors.white60,
+                ),
+              )
             : const SizedBox(),
         Padding(
           padding: const EdgeInsets.only(left: 20),
