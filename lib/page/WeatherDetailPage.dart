@@ -174,7 +174,6 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
 
   Widget weatherDetailLayout(BuildContext context) {
     if (weatherBean != null) {
-      var mediaQueryData = MediaQuery.of(context);
       return Theme(
         data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.fromSwatch()
@@ -201,7 +200,7 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
                 _hourlyForecastLayout(),
                 _dividerLayout(),
                 _moreInfLayout(),
-                _dataFromLayout(),
+                _dataFromLayout()
               ],
             ),
           ),
@@ -269,7 +268,7 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
   /// 当前天气
   Widget _weatherLayout() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 28),
+      padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -363,22 +362,27 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
     return Padding(
       padding: const EdgeInsets.only(top: 25),
       child: Center(
-          child: OutlineButton(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: const Text(
-          '15天天气预报',
-          style: TextStyle(fontSize: 14, color: Colors.white54),
+        child: OutlinedButton(
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all(
+                const EdgeInsets.symmetric(horizontal: 25)),
+            shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4))),
+            side: MaterialStateProperty.all(
+                const BorderSide(color: Colors.white30)),
+            overlayColor: MaterialStateProperty.all(Colors.white30),
+            splashFactory: InkRipple.splashFactory,
+          ),
+          child: const Text(
+            '15天天气预报',
+            style: TextStyle(fontSize: 14, color: Colors.white54),
+          ),
+          onPressed: () {
+            Navigator.of(context).pushNamed("more_day_forecast",
+                arguments: weatherBean!.result.daily);
+          },
         ),
-        onPressed: () {
-          Navigator.of(context).pushNamed("more_day_forecast",
-              arguments: weatherBean!.result.daily);
-        },
-        highlightColor: Colors.transparent,
-        splashColor: Colors.white30,
-        borderSide: const BorderSide(color: Colors.white30),
-        highlightedBorderColor: Colors.white30,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-      )),
+      ),
     );
   }
 
