@@ -115,7 +115,7 @@ class _MainPageState extends State<MainPage> {
         });
       }
     } else {
-      District district = District("", "", '未知', -1, -1, isLocation: true);
+      District district = District("", "", '正在定位', -1, -1, isLocation: true);
       setState(() {
         districtList.add(district);
         this.district = district;
@@ -360,7 +360,7 @@ class _MainPageState extends State<MainPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                district != null ? district!.name : '正在定位',
+                district != null ? district!.name : '未知',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,

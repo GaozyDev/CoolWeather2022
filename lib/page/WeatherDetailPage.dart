@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:amap_flutter_location/amap_flutter_location.dart';
@@ -118,40 +117,39 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
   }
 
   /// 获取定位信息
-  _initLocation() async {
-    AMapFlutterLocation.setApiKey(
-        "2711cbe26c75b312eb9bc3921cb5ffd0", "2711cbe26c75b312eb9bc3921cb5ffd0");
+  _initLocation() {
     AMapFlutterLocation.updatePrivacyShow(true, true);
     AMapFlutterLocation.updatePrivacyAgree(true);
+    AMapFlutterLocation.setApiKey(
+        "2711cbe26c75b312eb9bc3921cb5ffd0", "iOS Key");
 
     _locationPlugin = AMapFlutterLocation();
+    _locationListener = _locationPlugin!
+        .onLocationChanged()
+        .listen((Map<String, Object> result) {
+      String cityCode = result["cityCode"] as String;
+      String adCode = result["adCode"] as String;
+      String districtName = result["district"] as String;
+      double latitude = result["latitude"] as double;
+      double longitude = result["longitude"] as double;
+      district = District(cityCode, adCode,
+          districtName, latitude, longitude,
+          isLocation: true);
+
+      widget.setLocation(district);
+      // _queryWeather(district);
+    });
+
     AMapLocationOption locationOption = AMapLocationOption();
     locationOption.onceLocation = true;
     locationOption.needAddress = true;
+    locationOption.geoLanguage = GeoLanguage.DEFAULT;
+    locationOption.desiredLocationAccuracyAuthorizationMode =
+        AMapLocationAccuracyAuthorizationMode.ReduceAccuracy;
+    locationOption.fullAccuracyPurposeKey = "AMapLocationScene";
+    locationOption.locationMode = AMapLocationMode.Hight_Accuracy;
     _locationPlugin!.setLocationOption(locationOption);
-    _locationListener = _locationPlugin!.onLocationChanged().listen((Map<String, Object> result) {
-      print(result);
-    });
     _locationPlugin!.startLocation();
-
-    // bool result = await AMapLocationClient.startup(
-    //     AMapLocationOption(onceLocation: true));
-    //
-    // if (result) {
-    //   AMapLocation aMapLocation = await AMapLocationClient.getLocation(true);
-    //   if (aMapLocation.district == null ||
-    //       aMapLocation.latitude == null ||
-    //       aMapLocation.longitude == null) {
-    //     return;
-    //   }
-    //
-    //   district = District(aMapLocation.citycode, aMapLocation.adcode,
-    //       aMapLocation.district, aMapLocation.latitude, aMapLocation.longitude,
-    //       isLocation: true);
-    //
-    //   widget.setLocation(district);
-    //   // _queryWeather(district);
-    // }
   }
 
   @override
