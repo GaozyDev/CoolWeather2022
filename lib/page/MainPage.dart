@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:quiver/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../views/weather/cloudy_anim.dart';
 import 'WeatherDetailPage.dart';
 import '../bean/focus_district_list_bean.dart';
 import '../bean/weather_bean.dart';
@@ -270,51 +271,49 @@ class _MainPageState extends State<MainPage> {
 
   /// 根据天气类型获取天气动画
   Widget _createWeatherAnimWidget() {
-    Widget animWidget;
-    // if (weatherBean == null) {
-    animWidget = EmptyBg();
-    // } else {
-    //   switch (weatherBean.result.realtime.skycon) {
-    //     case 'CLEAR_DAY':
-    //       animWidget = SunnyAnim(key: _globalKey);
-    //       break;
-    //     case 'CLEAR_NIGHT':
-    //       animWidget = SunnyNightAnim(key: _globalKey);
-    //       break;
-    //     case 'PARTLY_CLOUDY_DAY':
-    //       animWidget = CloudyAnim(key: _globalKey);
-    //       break;
-    //     case 'PARTLY_CLOUDY_NIGHT':
-    //       animWidget = CloudyNightAnim(key: _globalKey);
-    //       break;
-    //     case 'CLOUDY':
-    //       if (DateUtils.isDay(weatherBean)) {
-    //         animWidget = OvercastAnim(key: _globalKey);
-    //       } else {
-    //         animWidget = OvercastNightAnim(key: _globalKey);
-    //       }
-    //       break;
-    //     case 'RAIN':
-    //       animWidget = RainAnim(
-    //           weatherBean != null ? DateUtils.isDay(weatherBean) : true,
-    //           key: _globalKey);
-    //       break;
-    //     case 'SNOW':
-    //       if (weatherBean != null) {
-    //         animWidget = DateUtils.isDay(weatherBean)
-    //             ? SnowAnim(key: _globalKey)
-    //             : SnowNightAnim(key: _globalKey);
-    //       }
-    //       break;
-    //     case 'HAZE':
-    //       animWidget = HazeAnim(
-    //           weatherBean != null ? DateUtils.isDay(weatherBean) : true,
-    //           key: _globalKey);
-    //       break;
-    //     default:
-    //       animWidget = EmptyBg();
-    //   }
-    // }
+    Widget animWidget = EmptyBg();
+    if (weatherBean == null) {
+      animWidget = EmptyBg();
+    } else {
+      switch (weatherBean!.result.realtime.skycon) {
+        case 'CLEAR_DAY':
+          // animWidget = SunnyAnim(key: _globalKey);
+          break;
+        case 'CLEAR_NIGHT':
+          // animWidget = SunnyNightAnim(key: _globalKey);
+          break;
+        case 'PARTLY_CLOUDY_DAY':
+          animWidget = CloudyAnim(key: _globalKey);
+          break;
+        case 'PARTLY_CLOUDY_NIGHT':
+          // animWidget = CloudyNightAnim(key: _globalKey);
+          break;
+        case 'CLOUDY':
+          if (MyDateUtils.isDay(weatherBean!)) {
+            // animWidget = OvercastAnim(key: _globalKey);
+          } else {
+            // animWidget = OvercastNightAnim(key: _globalKey);
+          }
+          break;
+        case 'RAIN':
+          // animWidget = RainAnim(
+          //     weatherBean != null ? DateUtils.isDay(weatherBean) : true,
+          //     key: _globalKey);
+          break;
+        case 'SNOW':
+          if (weatherBean != null) {
+            // animWidget = DateUtils.isDay(weatherBean)
+            //     ? SnowAnim(key: _globalKey)
+            //     : SnowNightAnim(key: _globalKey);
+          }
+          break;
+        case 'HAZE':
+          // animWidget = HazeAnim(
+          //     weatherBean != null ? DateUtils.isDay(weatherBean) : true,
+          //     key: _globalKey);
+          break;
+      }
+    }
 
     return animWidget;
   }
