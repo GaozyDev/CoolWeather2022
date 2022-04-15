@@ -1,3 +1,4 @@
+import 'package:cool_weather_2022/page/SettingPage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +11,8 @@ void main() {
   final unitModel = UnitModel();
   unitModel.initUnit();
 
-  runApp(Provider(create: (_) => unitModel, child: const MyApp()));
+  runApp(
+      ChangeNotifierProvider(create: (_) => unitModel, child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -29,10 +31,9 @@ class MyApp extends StatelessWidget {
               title: const Text('About Route'),
             ),
           );
-        }
+        },
+        "setting": (context) => const SettingPage(),
       },
     );
   }
 }
-
-

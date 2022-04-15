@@ -41,7 +41,7 @@ class WeatherDetailPage extends StatefulWidget {
 
   final bool needLocation;
 
-  const WeatherDetailPage(this.district, this.setLocation, this.setWeatherData,
+  WeatherDetailPage(this.district, this.setLocation, this.setWeatherData,
       this.height, this.needLocation);
 
   @override
@@ -239,29 +239,26 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
 
   /// 当前气温
   Widget _tempLayout() {
-    return Consumer<UnitModel>(
-      builder: (context, unitModel, _) {
-        double temperature = realtime?.temperature ?? 0;
-        if (unitModel.temperature == TemperatureUnit.fahrenheit) {
-          temperature = UnitConvertUtils.celsiusToFahrenheit(temperature);
-        }
-        return Padding(
-          padding: const EdgeInsets.only(left: 28),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                '${temperature.toStringAsFixed(0)}${temperatureUnitList.elementAt(unitModel.temperature.index).unitShow}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 60,
-                  fontWeight: FontWeight.w300,
-                ),
-              )
-            ],
-          ),
-        );
-      },
+    double temperature = realtime?.temperature ?? 0;
+    var tempUnit = Provider.of<UnitModel>(context).temperature;
+    if (tempUnit == TemperatureUnit.fahrenheit) {
+      temperature = UnitConvertUtils.celsiusToFahrenheit(temperature);
+    }
+    return Padding(
+      padding: const EdgeInsets.only(left: 28),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            '${temperature.toStringAsFixed(0)}${temperatureUnitList.elementAt(tempUnit.index).unitShow}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 60,
+              fontWeight: FontWeight.w300,
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -416,16 +413,16 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
               return SizedBox(
                 width: screenWidth / 6.5,
                 child: Padding(
-                  padding: EdgeInsets.only(top: 15),
+                  padding: const EdgeInsets.only(top: 15),
                   child: Column(
                     children: <Widget>[
                       Text(
                           MyDateUtils.getFormatTimeHHmm(
                               hourly!.skycon.elementAt(position).datetime),
-                          style:
-                              TextStyle(color: Colors.white54, fontSize: 14)),
+                          style: const TextStyle(
+                              color: Colors.white54, fontSize: 14)),
                       Padding(
-                        padding: EdgeInsets.only(top: 7, bottom: 7),
+                        padding: const EdgeInsets.only(top: 7, bottom: 7),
                         child: weatherIcon,
                       ),
                       Text(desc,
@@ -442,121 +439,116 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
 
   /// 更多信息，空气质量，风向风速，紫外线等...
   Widget _moreInfLayout() {
+    var unitModel = Provider.of<UnitModel>(context);
     // todo 可以使用 GridView 替换
-    return Consumer<UnitModel>(
-      builder: (context, unitModel, _) {
-        double temperature = realtime!.temperature;
-        if (unitModel.temperature == TemperatureUnit.fahrenheit) {
-          temperature = UnitConvertUtils.celsiusToFahrenheit(temperature);
-        }
+    double temperature = realtime!.temperature;
+    if (unitModel.temperature == TemperatureUnit.fahrenheit) {
+      temperature = UnitConvertUtils.celsiusToFahrenheit(temperature);
+    }
 
-        double windSpeed = realtime!.wind.speed;
-        String windSpeedDesc;
-        // 如果风力单位是"级"，则单位显示在主内容上
-        String windUnit = '';
+    double windSpeed = realtime!.wind.speed;
+    String windSpeedDesc;
+    // 如果风力单位是"级"，则单位显示在主内容上
+    String windUnit = '';
 
-        if (unitModel.wind == WindUnit.grade) {
-          windSpeedDesc = UnitConvertUtils.kmhToGrade(windSpeed) +
-              windUnitList.elementAt(unitModel.wind.index).unitEN;
-        } else {
-          if (unitModel.wind == WindUnit.m_s) {
-            windSpeed = UnitConvertUtils.kmhToMs(windSpeed);
-          } else if (unitModel.wind == WindUnit.ft_s) {
-            windSpeed = UnitConvertUtils.kmhToFts(windSpeed);
-          } else if (unitModel.wind == WindUnit.mph) {
-            windSpeed = UnitConvertUtils.kmhToMph(windSpeed);
-          } else if (unitModel.wind == WindUnit.kts) {
-            windSpeed = UnitConvertUtils.kmhToKts(windSpeed);
-          }
-          windSpeedDesc = windSpeed.toStringAsFixed(1);
-          windUnit = windUnitList.elementAt(unitModel.wind.index).unitEN;
-        }
+    if (unitModel.wind == WindUnit.grade) {
+      windSpeedDesc = UnitConvertUtils.kmhToGrade(windSpeed) +
+          windUnitList.elementAt(unitModel.wind.index).unitEN;
+    } else {
+      if (unitModel.wind == WindUnit.m_s) {
+        windSpeed = UnitConvertUtils.kmhToMs(windSpeed);
+      } else if (unitModel.wind == WindUnit.ft_s) {
+        windSpeed = UnitConvertUtils.kmhToFts(windSpeed);
+      } else if (unitModel.wind == WindUnit.mph) {
+        windSpeed = UnitConvertUtils.kmhToMph(windSpeed);
+      } else if (unitModel.wind == WindUnit.kts) {
+        windSpeed = UnitConvertUtils.kmhToKts(windSpeed);
+      }
+      windSpeedDesc = windSpeed.toStringAsFixed(1);
+      windUnit = windUnitList.elementAt(unitModel.wind.index).unitEN;
+    }
 
-        double visibility = realtime!.visibility;
-        if (unitModel.visibility == VisibilityUnit.mi) {
-          visibility = UnitConvertUtils.kmToMi(visibility);
-        }
+    double visibility = realtime!.visibility;
+    if (unitModel.visibility == VisibilityUnit.mi) {
+      visibility = UnitConvertUtils.kmToMi(visibility);
+    }
 
-        double pres = realtime!.pres;
-        if (unitModel.airPressure == AirPressureUnit.hPa) {
-          pres = UnitConvertUtils.paToHpa(pres);
-        } else if (unitModel.airPressure == AirPressureUnit.mmHg) {
-          pres = UnitConvertUtils.paToMmHg(pres);
-        } else if (unitModel.airPressure == AirPressureUnit.inHg) {
-          pres = UnitConvertUtils.paToInHg(pres);
-        }
+    double pres = realtime!.pres;
+    if (unitModel.airPressure == AirPressureUnit.hPa) {
+      pres = UnitConvertUtils.paToHpa(pres);
+    } else if (unitModel.airPressure == AirPressureUnit.mmHg) {
+      pres = UnitConvertUtils.paToMmHg(pres);
+    } else if (unitModel.airPressure == AirPressureUnit.inHg) {
+      pres = UnitConvertUtils.paToInHg(pres);
+    }
 
-        return Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15),
-                    child: Row(
-                      children: <Widget>[
-                        getWidget(
-                            '空气质量', Translation.getAqiDesc(realtime!.aqi), ''),
-                        getWidget('PM2.5', realtime!.pm25.toString(), ''),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 25),
-                    child: Row(
-                      children: <Widget>[
-                        getWidget(
-                            Translation.getWindDir(realtime!.wind.direction),
-                            windSpeedDesc,
-                            windUnit),
-                        getWidget(
-                            '体感温度',
-                            temperature.toStringAsFixed(0) +
-                                temperatureUnitList
-                                    .elementAt(unitModel.temperature.index)
-                                    .unitShow,
-                            ''),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 25),
-                    child: Row(
-                      children: <Widget>[
-                        getWidget(
-                            '湿度',
-                            (realtime!.humidity * 100 + 0.5).toInt().toString(),
-                            '%'),
-                        getWidget(
-                            '能见度',
-                            visibility.toStringAsFixed(1),
-                            visibilityUnitList
-                                .elementAt(unitModel.visibility.index)
-                                .unitEN),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 25),
-                    child: Row(
-                      children: <Widget>[
-                        getWidget('紫外线', realtime!.ultraviolet.desc, ''),
-                        getWidget(
-                            '气压',
-                            pres.toStringAsFixed(0),
-                            airPressureUnitList
-                                .elementAt(unitModel.airPressure.index)
-                                .unitEN),
-                      ],
-                    ),
-                  ),
-                ],
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: Row(
+                  children: <Widget>[
+                    getWidget(
+                        '空气质量', Translation.getAqiDesc(realtime!.aqi), ''),
+                    getWidget('PM2.5', realtime!.pm25.toString(), ''),
+                  ],
+                ),
               ),
-            )
-          ],
-        );
-      },
+              Padding(
+                padding: const EdgeInsets.only(top: 25),
+                child: Row(
+                  children: <Widget>[
+                    getWidget(Translation.getWindDir(realtime!.wind.direction),
+                        windSpeedDesc, windUnit),
+                    getWidget(
+                        '体感温度',
+                        temperature.toStringAsFixed(0) +
+                            temperatureUnitList
+                                .elementAt(unitModel.temperature.index)
+                                .unitShow,
+                        ''),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 25),
+                child: Row(
+                  children: <Widget>[
+                    getWidget(
+                        '湿度',
+                        (realtime!.humidity * 100 + 0.5).toInt().toString(),
+                        '%'),
+                    getWidget(
+                        '能见度',
+                        visibility.toStringAsFixed(1),
+                        visibilityUnitList
+                            .elementAt(unitModel.visibility.index)
+                            .unitEN),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 25),
+                child: Row(
+                  children: <Widget>[
+                    getWidget('紫外线', realtime!.ultraviolet.desc, ''),
+                    getWidget(
+                        '气压',
+                        pres.toStringAsFixed(0),
+                        airPressureUnitList
+                            .elementAt(unitModel.airPressure.index)
+                            .unitEN),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 
@@ -572,7 +564,7 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
                 fontSize: 14,
               )),
           Padding(
-            padding: EdgeInsets.only(top: 2),
+            padding: const EdgeInsets.only(top: 2),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
@@ -702,7 +694,7 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
 
     // 如果日出日落时间点在上面的 minDateTime 和 maxDateTime 之间，
     // 则将日出日落时间点添加到小时天气时间点上
-    daily.astro.forEach((day) {
+    for (var day in daily.astro) {
       String sunriseString = day.date + ' ' + day.sunrise.time;
       DateTime sunrise = DateTime.parse(sunriseString);
       if (sunrise.compareTo(minDateTime) >= 0 &&
@@ -718,7 +710,7 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
         hourSkyconList.add(StringValue("SUNSET", sunsetString));
         hourTempList.add(DoubleValue(sunsetTag, sunsetString));
       }
-    });
+    }
 
     // 对小时天气按时间点进行排序
     hourSkyconList.sort((skycon1, skycon2) {
