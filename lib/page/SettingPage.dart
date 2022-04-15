@@ -51,6 +51,29 @@ class SettingPageState extends State<SettingPage> {
                 // todo 传方法不太好，最好传个 sp 的 key，以下相同
                 unitModel.setTemperatureUnit),
           ),
+          _unitRowWidget('风力单位', windUnitList.elementAt(unitModel.wind.index),
+              windUnitList, unitModel.setWindUnit),
+          _unitRowWidget(
+              '降水量',
+              rainfallUnitList.elementAt(unitModel.rainfall.index),
+              rainfallUnitList,
+              unitModel.setRainfallUnit),
+          _unitRowWidget(
+            '能见度',
+            visibilityUnitList.elementAt(unitModel.visibility.index),
+            visibilityUnitList,
+            unitModel.setVisibilityUnit,
+          ),
+          _unitRowWidget(
+            '气压',
+            airPressureUnitList.elementAt(unitModel.airPressure.index),
+            airPressureUnitList,
+            unitModel.setAirPressureUnit,
+          ),
+          _warnRowWidget(),
+          _dividerLayout(),
+          _aboutRowWidget(),
+          _dividerLayout()
         ],
       ),
     );
@@ -83,6 +106,65 @@ class SettingPageState extends State<SettingPage> {
       ),
       onTap: () {
         selectUnit(content, unitList, setUnit);
+      },
+    );
+  }
+
+  Widget _warnRowWidget() {
+    return InkWell(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  '天气预警',
+                  style: TextStyle(fontSize: 17),
+                ),
+                Text('当出现特殊天气时通知提醒',
+                    style: TextStyle(fontSize: 12.5, color: Colors.grey))
+              ],
+            ),
+          ),
+          Switch(
+              value: isNotifyOpen,
+              activeColor: Colors.blue,
+              onChanged: (value) {
+                setState(() {
+                  isNotifyOpen = value;
+                  _updateSpData(Constant.spNotifyOpen, isNotifyOpen);
+                });
+              })
+        ],
+      ),
+      onTap: () {
+        setState(() {
+          isNotifyOpen = !isNotifyOpen;
+          _updateSpData(Constant.spNotifyOpen, isNotifyOpen);
+        });
+      },
+    );
+  }
+
+  _updateSpData(String key, bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(key, value);
+  }
+
+  Widget _aboutRowWidget() {
+    return InkWell(
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Text(
+          '关于',
+          style: TextStyle(fontSize: 17),
+        ),
+      ),
+      onTap: () {
+        Navigator.of(context).pushNamed('about');
       },
     );
   }
